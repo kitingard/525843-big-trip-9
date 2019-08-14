@@ -4,3 +4,7 @@ env:
   commonjs: true
 
 extends: 'htmlacademy/es6'
+
+parserOptions:
+    ecmaVersion: 6
+    sourceType: 'module'
