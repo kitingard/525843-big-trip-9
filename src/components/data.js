@@ -1,37 +1,96 @@
+import moment from "moment";
+
 const getRandom = (count) => Math.floor(Math.random() * count);
 
-export const cardData = () => ({
-  eventsDate: Date.now() + 1 + getRandom(2) * 24 * 60 * 60 * 1000,
-  event: {
-    type: [`bus`, `check-in`, `drive`, `flight`, `restaurant`, `ship`, `sightseeing`, `taxi`, `train`, `transport`, `trip`][getRandom(11)],
+export const event = function () {
+  return {
+    type: ``,
+    city: ``,
+    startTime: ``,
+    types: [`bus`, `check-in`, `drive`, `flight`, `restaurant`, `ship`, `sightseeing`, `taxi`, `train`, `transport`, `trip`],
     price: [10, 20, 50, 70, 100, 150, 200, 300][getRandom(8)],
-    city: [`Sankt-Peterburg`, `Smolensk`, `Moscow`, `Saratov`, `Sochi`][getRandom(5)],
-    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`.split(`.`).sort(() => Math.random() - 0.5).slice(0, getRandom(2)),
+    cities: [`Sankt-Peterburg`, `Smolensk`, `Moscow`, `Saratov`, `Sochi`],
+    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`.split(`.`).sort(() => Math.random() - 0.5).slice(0, getRandom(3)).join(`. `).trim(),
+    options: [
+      {
+        title: `Add luggage`,
+        price: 30,
+        checked: false,
+      },
+      {
+        title: `Switch to comfort class`,
+        price: 100,
+        checked: Boolean(Math.round(Math.random())),
+      },
+      {
+        title: `Add meal`,
+        price: 15,
+        checked: false,
+      },
+      {
+        title: `Choose seats`,
+        price: 5,
+        checked: Boolean(Math.round(Math.random())),
+      },
+      {
+        title: `Travel by train`,
+        price: 40,
+        checked: false,
+      },
+    ],
+    getRandomCity() {
+      this.city = this.cities[getRandom(5)];
+      return this.city;
+    },
+    getStartTime() {
+      this.startTime = Date.now() + 1 + getRandom(3) * 24 * 60 * 60 * 1000;
+      return this.startTime;
+    },
+    getEndTime() {
+      const endTime = this.startTime + 60 * 60 * 1000;
+      return endTime;
+    },
+    getRandomType() {
+      this.type = this.types[getRandom(11)];
+      return this.type;
+    },
     getDescription() {
-      switch (this.type) {
-        case `bus`:
-          return `Bus to ${this.city}`;
-        case `check-in`:
-          return `Check into hotel`;
-        case `drive`:
-          return `Drive to ${this.city}`;
-        case `flight`:
-          return `Flight to ${this.city}`;
-        case `restaurant`:
-          return `Dinner in ${this.city}`;
-        case `ship`:
-          return `Shopping in ${this.city}`;
-        case `sightseeing`:
-          return `Natural History Museum in ${this.city}`;
-        case `taxi`:
-          return `Taxi to airport`;
-        case `train`:
-          return `Train to ${this.city}`;
-        case `transport`:
-          return `Transport to ${this.city}`;
-        case `trip`:
-          return `Trip to ${this.city}`;
-      }
+      const typeDescriptions = new Map([
+        [`bus`, `Bus to ${this.getRandomCity()}`],
+        [`check-in`, `Check into hotel`],
+        [`drive`, `Drive to ${this.getRandomCity()}`],
+        [`flight`, `Flight to ${this.getRandomCity()}`],
+        [`restaurant`, `Dinner in ${this.getRandomCity()}`],
+        [`ship`, `Sailing in ${this.getRandomCity()}`],
+        [`sightseeing`, `Natural History Museum in ${this.getRandomCity()}`],
+        [`taxi`, `Taxi to airport`],
+        [`train`, `Train to ${this.getRandomCity()}`],
+        [`transport`, `Transport to ${this.getRandomCity()}`],
+        [`trip`, `Trip to ${this.getRandomCity()}`]
+      ]);
+      return typeDescriptions.get(this.type);
     }
-  }
-});
+  };
+};
+
+const eventsData = new Array(9).fill(``).map(event);
+export const daysData = [];
+
+export const sortEvents = () => {
+  let array = [];
+  eventsData.map((element) => {
+    element.getRandomCity();
+    element.getRandomType();
+    element.getStartTime();
+    array.push(moment(element.startTime).format(`MMM D`));
+  });
+  const startTimeSet = new Set(array);
+  startTimeSet.forEach((time) => {
+    let events = [];
+    events = eventsData.filter((elem) => {
+      return moment(elem.startTime).format(`MMM D`) === time;
+    });
+    daysData.push([{date: time, events}]);
+  });
+};
+

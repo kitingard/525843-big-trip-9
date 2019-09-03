@@ -15,4 +15,4 @@ export const filter = () => `<form class="trip-filters" action="#" method="get">
 </div>
 
 <button class="visually-hidden" type="submit">Accept filter</button>
-</form>`.trim();
+</form>`;
