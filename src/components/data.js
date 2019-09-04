@@ -7,6 +7,7 @@ export const event = function () {
     type: ``,
     city: ``,
     startTime: ``,
+    endTime: ``,
     types: [`bus`, `check-in`, `drive`, `flight`, `restaurant`, `ship`, `sightseeing`, `taxi`, `train`, `transport`, `trip`],
     price: [10, 20, 50, 70, 100, 150, 200, 300][getRandom(8)],
     cities: [`Sankt-Peterburg`, `Smolensk`, `Moscow`, `Saratov`, `Sochi`],
@@ -47,8 +48,8 @@ export const event = function () {
       return this.startTime;
     },
     getEndTime() {
-      const endTime = this.startTime + 60 * 60 * 1000;
-      return endTime;
+      this.endTime = this.startTime + (60 + getRandom(100)) * 60 * 1000;
+      return this.endTime;
     },
     getRandomType() {
       this.type = this.types[getRandom(11)];
@@ -74,6 +75,7 @@ export const event = function () {
 };
 
 const eventsData = new Array(9).fill(``).map(event);
+const sortDates = ((a, b) => moment(a).format(`X`) - moment(b).format(`X`));
 export const daysData = [];
 
 export const sortEvents = () => {
@@ -82,9 +84,10 @@ export const sortEvents = () => {
     element.getRandomCity();
     element.getRandomType();
     element.getStartTime();
+    element.getEndTime();
     array.push(moment(element.startTime).format(`MMM D`));
   });
-  const startTimeSet = new Set(array);
+  const startTimeSet = new Set(array.sort(sortDates));
   startTimeSet.forEach((time) => {
     let events = [];
     events = eventsData.filter((elem) => {

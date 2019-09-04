@@ -1,6 +1,12 @@
 import moment from "moment";
 
-export const card = (daysData) => daysData.map((day, counter) => `<li class="trip-days__item  day">
+const getDuration = (end, start) => {
+  const duration = moment.duration(moment(end).diff(moment(start)));
+  const formatDuration = moment.utc(duration.as(`milliseconds`)).format(`H[H] m[M]`);
+  return formatDuration;
+};
+
+export const days = (daysData) => daysData.map((day, counter) => `<li class="trip-days__item  day">
     <div class="day__info">
       <span class="day__counter">${counter + 1}</span>
       <time class="day__date" datetime="${day.date}">${day.date}</time>
@@ -16,11 +22,11 @@ export const card = (daysData) => daysData.map((day, counter) => `<li class="tri
 
           <div class="event__schedule">
             <p class="event__time">
-              <time class="event__start-time" datetime="2019-03-18T10:30">${moment(event.getStartTime()).format(`HH:MM A`)}</time>
+              <time class="event__start-time" datetime="2019-03-18T10:30">${moment(event.getStartTime()).format(`HH:mm A`)}</time>
               &mdash;
-              <time class="event__end-time" datetime="2019-03-18T11:00">${moment(event.getEndTime()).format(`HH:MM A`)}</time>
+              <time class="event__end-time" datetime="2019-03-18T11:00">${moment(event.getEndTime()).format(`HH:mm A`)}</time>
             </p>
-            <p class="event__duration">1H 30M</p>
+            <p class="event__duration">${getDuration(event.endTime, event.StartTime)}</p>
           </div>
 
           <p class="event__price">

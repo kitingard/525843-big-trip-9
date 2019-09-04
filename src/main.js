@@ -3,7 +3,7 @@ import {menu} from "./components/menu";
 import {filter} from "./components/filter";
 import {sort} from "./components/sort";
 import {event, sortEvents, daysData} from "./components/data";
-import {card} from "./components/card";
+import {days} from "./components/days";
 import {cardForm} from "./components/cardForm";
 
 const ELEMENTS_COUNT = 1;
@@ -34,4 +34,4 @@ renderElement(sortContainer, `afterend`, sort);
 const cardsContainer = document.querySelector(`.trip-days`);
 
 renderElement(cardsContainer, `beforebegin`, cardForm, cardFormElement);
-renderCard(cardsContainer, card);
+renderCard(cardsContainer, days);
