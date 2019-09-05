@@ -2,7 +2,7 @@ import {route} from "./components/route";
 import {menu} from "./components/menu";
 import {filter} from "./components/filter";
 import {sort} from "./components/sort";
-import {event, sortEvents, daysData} from "./components/data";
+import {event, sortEvents, daysData, totalData, routeData} from "./components/data";
 import {days} from "./components/days";
 import {cardForm} from "./components/cardForm";
 
@@ -11,6 +11,7 @@ const routeContainer = document.querySelector(`.trip-info`);
 const menuContainer = document.querySelector(`.trip-controls h2`);
 const filterContainer = document.querySelector(`.trip-controls`);
 const sortContainer = document.querySelector(`.trip-events h2`);
+const totalCostContainer = document.querySelector(`.trip-info__cost-value`);
 const cardFormElement = [event()];
 
 const renderElement = (container, position, str, data) => {
@@ -22,11 +23,11 @@ const renderElement = (container, position, str, data) => {
 };
 
 const renderCard = (container, element) => {
-  sortEvents();
-  container.insertAdjacentHTML(`beforeend`, daysData.map(element).join(``));
+  container.insertAdjacentHTML(`beforeend`, element(daysData));
 };
 
-renderElement(routeContainer, `afterbegin`, route);
+sortEvents();
+renderElement(routeContainer, `afterbegin`, route, [routeData()]);
 renderElement(menuContainer, `afterend`, menu);
 renderElement(filterContainer, `beforeend`, filter);
 renderElement(sortContainer, `afterend`, sort);
@@ -35,3 +36,4 @@ const cardsContainer = document.querySelector(`.trip-days`);
 
 renderElement(cardsContainer, `beforebegin`, cardForm, cardFormElement);
 renderCard(cardsContainer, days);
+totalCostContainer.innerHTML = totalData();

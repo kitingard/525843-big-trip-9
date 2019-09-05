@@ -53,4 +53,4 @@ export const days = (daysData) => daysData.map((day, counter) => `<li class="tri
         </div>
       </li>`).join(``)}
     </ul>
-  </li>`);
+  </li>`).join(``);

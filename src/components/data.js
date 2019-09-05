@@ -57,20 +57,20 @@ export const event = function () {
     },
     getDescription() {
       const typeDescriptions = new Map([
-        [`bus`, `Bus to ${this.getRandomCity()}`],
-        [`check-in`, `Check into hotel`],
-        [`drive`, `Drive to ${this.getRandomCity()}`],
-        [`flight`, `Flight to ${this.getRandomCity()}`],
-        [`restaurant`, `Dinner in ${this.getRandomCity()}`],
-        [`ship`, `Sailing in ${this.getRandomCity()}`],
-        [`sightseeing`, `Natural History Museum in ${this.getRandomCity()}`],
-        [`taxi`, `Taxi to airport`],
-        [`train`, `Train to ${this.getRandomCity()}`],
-        [`transport`, `Transport to ${this.getRandomCity()}`],
-        [`trip`, `Trip to ${this.getRandomCity()}`]
+        [`bus`, `Bus to ${this.city}`],
+        [`check-in`, `Check into ${this.city} hotel`],
+        [`drive`, `Drive to ${this.city}`],
+        [`flight`, `Flight to ${this.city}`],
+        [`restaurant`, `Dinner in ${this.city}`],
+        [`ship`, `Sailing in ${this.city}`],
+        [`sightseeing`, `Natural History Museum in ${this.city}`],
+        [`taxi`, `Taxi to ${this.city} airport`],
+        [`train`, `Train to ${this.city}`],
+        [`transport`, `Transport to ${this.city}`],
+        [`trip`, `Trip to ${this.city}`]
       ]);
       return typeDescriptions.get(this.type);
-    }
+    },
   };
 };
 
@@ -93,7 +93,41 @@ export const sortEvents = () => {
     events = eventsData.filter((elem) => {
       return moment(elem.startTime).format(`MMM D`) === time;
     });
-    daysData.push([{date: time, events}]);
+    daysData.push({date: time, events});
   });
 };
 
+export const totalData = () => {
+  let priceArray = [];
+  daysData.map((day) => {
+    day.events.map((ev) => {
+      priceArray.push(ev.price);
+      ev.options.map((option) => {
+        if (option.checked) {
+          priceArray.push(option.price);
+        }
+      });
+    });
+  });
+  const reducer = (accumulator, currentValue) => accumulator + currentValue;
+  return priceArray.reduce(reducer);
+};
+
+export const routeData = function () {
+  return {
+    getDates() {
+      const first = daysData[0].date;
+      const last = daysData[daysData.length - 1].date;
+      return first.slice(0, 3) === last.slice(0, 3) ? first + ` - ` + last.slice(3) : first + ` - ` + last;
+    },
+    getRoute() {
+      const citiesArray = [];
+      daysData.map((day) => {
+        day.events.map((eve) => {
+          citiesArray.push(eve.city);
+        });
+      });
+      return citiesArray.length <= 3 ? citiesArray.join(` &mdash; `) : citiesArray[0] + ` &mdash; ... &mdash; ` + citiesArray[citiesArray.length - 1];
+    },
+  };
+};
