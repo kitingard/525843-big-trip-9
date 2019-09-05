@@ -27,4 +27,4 @@ export const sort = () => `<form class="trip-events__trip-sort  trip-sort" actio
   </div>
 
   <span class="trip-sort__item  trip-sort__item--offers">Offers</span>
-</form><ul class="trip-days"></ul>`.trim();
+</form><ul class="trip-days"></ul>`;
