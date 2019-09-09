@@ -4,6 +4,7 @@ const getRandom = (count) => Math.floor(Math.random() * count);
 
 export const event = function () {
   return {
+    eventEdit: false,
     type: ``,
     city: ``,
     startTime: ``,
@@ -88,12 +89,12 @@ export const sortEvents = () => {
     array.push(moment(element.startTime).format(`MMM D`));
   });
   const startTimeSet = new Set(array.sort(sortDates));
-  startTimeSet.forEach((time) => {
+  Array.from(startTimeSet).forEach((time, index) => {
     let events = [];
     events = eventsData.filter((elem) => {
       return moment(elem.startTime).format(`MMM D`) === time;
     });
-    daysData.push({date: time, events});
+    daysData.push({date: time, counter: index + 1, events});
   });
 };
 
