@@ -1,44 +1,36 @@
 import moment from "moment";
-import {createElement} from "./utils";
+import {AbstractComponent} from "./abstract-component";
 
-const getDuration = (end, start) => {
-  const duration = moment.duration(moment(end).diff(moment(start)));
-  const formatDuration = moment.utc(duration.as(`milliseconds`)).format(`H[H] m[M]`);
-  return formatDuration;
-};
-
-const getOptions = (arr) => {
-  const optionsSet = new Set(arr.map((elem) => {
-    if (elem.checked) {
-      return `<ul class="event__selected-offers">
-              <li class="event__offer">
-                <span class="event__offer-title">${elem.title}</span>
-                &plus;
-                &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
-              </li>
-            </ul>`;
-    } else {
-      return null;
-    }
-  }));
-  if (optionsSet.has(null)) {
-    optionsSet.delete(null);
-  }
-  return Array.from(optionsSet).length > 2 ? Array.from(optionsSet).slice(0, 2).join(``) : Array.from(optionsSet).join(``);
-};
-
-export class Event {
+export class Event extends AbstractComponent {
   constructor(event) {
+    super();
     this._event = event;
-    this._element = null;
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  getDuration() {
+    const duration = moment.duration(moment(this._event.endTime).diff(moment(this._event.startTime)));
+    const formatDuration = moment.utc(duration.as(`milliseconds`)).format(`H[H] m[M]`);
+    return formatDuration;
+  }
 
-    return this._element;
+  getOptions() {
+    const optionsSet = new Set(this._event.options.map((elem) => {
+      if (elem.checked) {
+        return `<ul class="event__selected-offers">
+                <li class="event__offer">
+                  <span class="event__offer-title">${elem.title}</span>
+                  &plus;
+                  &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
+                </li>
+              </ul>`;
+      } else {
+        return null;
+      }
+    }));
+    if (optionsSet.has(null)) {
+      optionsSet.delete(null);
+    }
+    return Array.from(optionsSet).length > 2 ? Array.from(optionsSet).slice(0, 2).join(``) : Array.from(optionsSet).join(``);
   }
 
   getTemplate() {
@@ -55,7 +47,7 @@ export class Event {
           &mdash;
           <time class="event__end-time" datetime="2019-03-18T11:00">${moment(this._event.getEndTime()).format(`HH:mm A`)}</time>
         </p>
-        <p class="event__duration">${getDuration(this._event.endTime, this._event.startTime)}</p>
+        <p class="event__duration">${this.getDuration()}</p>
       </div>
 
       <p class="event__price">
@@ -63,7 +55,7 @@ export class Event {
       </p>
 
       <h4 class="visually-hidden">Offers:</h4>
-      ${getOptions(this._event.options)}
+      ${this.getOptions()}
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
