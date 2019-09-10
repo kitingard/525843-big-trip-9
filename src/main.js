@@ -5,8 +5,8 @@ import {sort} from "./components/sort";
 import {sortEvents, daysData, totalData, routeData} from "./components/data";
 import {Day} from "./components/days";
 import {Event} from "./components/event";
-import {render, Position} from "./components/utils";
-// import {eventEdit} from "./components/eventEdit";
+import {render, Position, replace} from "./components/utils";
+import {EventEdit} from "./components/eventEdit";
 
 const ELEMENTS_COUNT = 1;
 const routeContainer = document.querySelector(`.trip-info`);
@@ -43,35 +43,30 @@ totalCostContainer.innerText = totalData();
 const renderDay = (data) => {
 
   const day = new Day(data);
-
-  // const onEscKeyDown = (evt) => {
-  //   if (evt.key === `Escape` || evt.key === `Esc`) {
-  //     // tasksContainer.replaceChild(task.getElement(), taskEdit.getElement());
-  //     // document.removeEventListener(`keydown`, onEscKeyDown);
-  //   }
-  // };
-
   const eventsCont = day.getElement().querySelector(`.trip-events__list`);
-
-  // Array.from(day.getElement().querySelectorAll(`.event__rollup-btn`)).map((btn, index) => btn.addEventListener(`click`, () => {
-  //     // tasksContainer.replaceChild(taskEdit.getElement(), task.getElement());
-  //     day._events[index].eventEdit = true;
-  //     console.log(day._events[index])
-  //     console.log(btn)
-  //     console.log('CLICK');
-  //     console.log(data)
-  //     render(cardsContainer, day.getEvents(), Position.BEFOREEND);
-  //     document.addEventListener(`keydown`, onEscKeyDown);
-  //   })
-  // );
 
   render(cardsContainer, day.getElement(), Position.BEFOREEND);
   day._events.map((elem) => renderEvent(elem, eventsCont));
 };
 
-const renderEvent = (evData, conta) => {
-  const ev = new Event(evData);
-  render(conta, ev.getElement(), Position.BEFOREEND);
+const renderEvent = (evData, container) => {
+  const event = new Event(evData);
+  const eventEdit = new EventEdit(evData);
+
+  Array.from(event.getElement().querySelectorAll(`.event__rollup-btn`)).map((btn) => btn.addEventListener(`click`, () => {
+      container.replaceChild(eventEdit.getElement(), event.getElement());
+    })
+  );
+
+  eventEdit.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, () => {
+    container.replaceChild(event.getElement(), eventEdit.getElement());
+  });
+
+  eventEdit.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    container.replaceChild(event.getElement(), eventEdit.getElement());
+  });
+
+  render(container, event.getElement(), Position.BEFOREEND);
 };
 
 daysData.map((day) => renderDay(day));
