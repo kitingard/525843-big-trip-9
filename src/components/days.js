@@ -1,19 +1,11 @@
-import {createElement} from "./utils";
+import {AbstractComponent} from "./abstract-component";
 
-export class Day {
+export class Day extends AbstractComponent {
   constructor({date, counter, events}) {
+    super();
     this._date = date;
     this._counter = counter;
     this._events = events;
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
   }
 
   getTemplate() {

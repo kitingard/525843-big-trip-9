@@ -1,18 +1,10 @@
 import moment from "moment";
-import {createElement} from "./utils";
+import {AbstractComponent} from "./abstract-component";
 
-export class EventEdit {
+export class EventEdit extends AbstractComponent {
   constructor(event) {
+    super();
     this._event = event;
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
   }
 
   getTemplate() {

@@ -1,17 +1,9 @@
-import {createElement} from "./utils";
+import {AbstractComponent} from "./abstract-component";
 
-export class Route {
+export class Route extends AbstractComponent {
   constructor(routeData) {
+    super();
     this._routeData = routeData;
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
   }
 
   getTemplate() {
