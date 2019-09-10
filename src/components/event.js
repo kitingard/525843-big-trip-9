@@ -7,6 +7,26 @@ const getDuration = (end, start) => {
   return formatDuration;
 };
 
+const getOptions = (arr) => {
+  const optionsSet = new Set(arr.map((elem) => {
+    if (elem.checked) {
+      return `<ul class="event__selected-offers">
+              <li class="event__offer">
+                <span class="event__offer-title">${elem.title}</span>
+                &plus;
+                &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
+              </li>
+            </ul>`;
+    } else {
+      return null;
+    }
+  }));
+  if (optionsSet.has(null)) {
+    optionsSet.delete(null);
+  }
+  return Array.from(optionsSet).length > 2 ? Array.from(optionsSet).slice(0, 2).join(``) : Array.from(optionsSet).join(``);
+};
+
 export class Event {
   constructor(event) {
     this._event = event;
@@ -43,19 +63,7 @@ export class Event {
       </p>
 
       <h4 class="visually-hidden">Offers:</h4>
-      ${this._event.options.map((elem) => {
-    if (elem.checked) {
-      return `<ul class="event__selected-offers">
-              <li class="event__offer">
-                <span class="event__offer-title">${elem.title}</span>
-                &plus;
-                &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
-              </li>
-            </ul>`;
-    } else {
-      return ``;
-    }
-  }).join(``)}
+      ${getOptions(this._event.options)}
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
