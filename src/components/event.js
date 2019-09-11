@@ -7,12 +7,6 @@ export class Event extends AbstractComponent {
     this._event = event;
   }
 
-  getDuration() {
-    const duration = moment.duration(moment(this._event.endTime).diff(moment(this._event.startTime)));
-    const formatDuration = moment.utc(duration.as(`milliseconds`)).format(`H[H] m[M]`);
-    return formatDuration;
-  }
-
   getOptions() {
     const optionsSet = new Set(this._event.options.map((elem) => {
       if (elem.checked) {
@@ -47,7 +41,7 @@ export class Event extends AbstractComponent {
           &mdash;
           <time class="event__end-time" datetime="2019-03-18T11:00">${moment(this._event.getEndTime()).format(`HH:mm A`)}</time>
         </p>
-        <p class="event__duration">${this.getDuration()}</p>
+        <p class="event__duration">${moment.utc(this._event.timeDuration).format(`H[H] m[M]`)}</p>
       </div>
 
       <p class="event__price">

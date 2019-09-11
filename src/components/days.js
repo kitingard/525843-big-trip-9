@@ -8,6 +8,10 @@ export class Day extends AbstractComponent {
     this._events = events;
   }
 
+  getEvents() {
+    return this._events;
+  }
+
   getTemplate() {
     return `<li class="trip-days__item  day">
     <div class="day__info">

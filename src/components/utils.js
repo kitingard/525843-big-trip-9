@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const Position = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
@@ -25,3 +27,5 @@ export const unrender = (element) => {
     element.remove();
   }
 };
+
+export const sortDates = ((a, b) => moment(a, `X`) - moment(b, `X`));
