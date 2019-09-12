@@ -1,14 +1,14 @@
 import moment from "moment";
-
 const getRandom = (count) => Math.floor(Math.random() * count);
 
-export const event = function () {
+export const eventMock = function () {
   return {
     type: ``,
     typeDescription: ``,
     city: ``,
     startTime: ``,
     endTime: ``,
+    timeDuration: ``,
     transfer: [`bus`, `drive`, `flight`, `ship`, `taxi`, `train`, `transport`],
     activity: [`restaurant`, `sightseeing`, `check-in`],
     price: [10, 20, 50, 70, 100, 150, 200, 300][getRandom(8)],
@@ -46,6 +46,11 @@ export const event = function () {
         checked: Boolean(Math.round(Math.random())),
       },
     ],
+    getDuration() {
+      const duration = moment.duration(moment(this.endTime).diff(moment(this.startTime)));
+      this.timeDuration = duration.as(`milliseconds`);
+      return this.timeDuration;
+    },
     getRandomCity() {
       this.city = this.cities[getRandom(5)];
       return this.city;
@@ -78,64 +83,6 @@ export const event = function () {
       ]);
       this.typeDescription = typeDescriptions.get(this.type);
       return this.typeDescription + this.city;
-    },
-  };
-};
-
-const eventsData = new Array(9).fill(``).map(event);
-const sortDates = ((a, b) => moment(a, `X`) - moment(b, `X`));
-export const daysData = [];
-
-export const sortEvents = () => {
-  let array = [];
-  eventsData.map((element) => {
-    element.getRandomCity();
-    element.getRandomType();
-    element.getStartTime();
-    element.getEndTime();
-    array.push(moment(element.startTime).format(`MMM D`));
-  });
-  const startTimeSet = new Set(array.sort(sortDates));
-  Array.from(startTimeSet).forEach((time, index) => {
-    let events = [];
-    events = eventsData.filter((elem) => {
-      return moment(elem.startTime).format(`MMM D`) === time;
-    });
-    daysData.push({date: time, counter: index + 1, events});
-  });
-};
-
-export const totalData = () => {
-  let priceArray = [];
-  daysData.map((day) => {
-    day.events.map((ev) => {
-      priceArray.push(ev.price);
-      ev.options.map((option) => {
-        if (option.checked) {
-          priceArray.push(option.price);
-        }
-      });
-    });
-  });
-  const reducer = (accumulator, currentValue) => accumulator + currentValue;
-  return priceArray.reduce(reducer);
-};
-
-export const routeData = function () {
-  return {
-    getDates() {
-      const first = daysData[0].date;
-      const last = daysData[daysData.length - 1].date;
-      return first.slice(0, 3) === last.slice(0, 3) ? first + ` - ` + last.slice(3) : first + ` - ` + last;
-    },
-    getRoute() {
-      const citiesArray = [];
-      daysData.map((day) => {
-        day.events.map((eve) => {
-          citiesArray.push(eve.city);
-        });
-      });
-      return citiesArray.length <= 3 ? citiesArray.join(` &mdash; `) : citiesArray[0] + ` &mdash; ... &mdash; ` + citiesArray[citiesArray.length - 1];
     },
   };
 };
