@@ -1,5 +1,5 @@
 import moment from "moment";
-import {sortDates} from "./utils";
+import {sortDates, sortNumbers} from "./utils";
 
 export class DataController {
   constructor(event) {
@@ -7,18 +7,15 @@ export class DataController {
     this._eventSortedData = [];
     this._timeSortedData = [];
     this._priceSortedData = [];
-    this._eventsData = new Array(9).fill(``).map(this._event);
+    this._eventsData = new Array(9).fill(``).map((elem) => elem = this._event.init());
   }
 
   _sortEvents() {
+    console.log(this._event)
+    console.log(this._event.init())
+    console.log(this._eventsData)
     let array = [];
     this._eventsData.map((element) => {
-      element.getRandomCity();
-      element.getRandomType();
-      element.getTypeDescription();
-      element.getStartTime();
-      element.getEndTime();
-      element.getDuration();
       array.push(moment(element.startTime).format(`MMM D`));
     });
     const startTimeSet = new Set(array.sort(sortDates));
@@ -32,30 +29,17 @@ export class DataController {
     return this._eventSortedData;
   }
 
-  _sortTimes() {
-    let durArr = this._eventsData.map((ele) => {
-      return ele.timeDuration;
-    }).sort(sortDates).reverse();
-    new Set(durArr).forEach((dur) => {
-      const durEv = this._eventsData.filter((el) => {
-        return el.timeDuration === dur;
+  _sortTimesAndPrices(param, func, array) {
+    let numArray = this._eventsData.map((it) => {
+      return param === `price` ? it.price : it.timeDuration;
+    }).sort(func).reverse();
+    new Set(numArray).forEach((parameter) => {
+      const sortEv = this._eventsData.filter((el) => {
+        return param === `price` ? el.price === parameter : el.timeDuration === parameter;
       });
-      this._timeSortedData.push({date: ``, counter: ``, events: durEv});
+      array.push({date: ``, counter: ``, events: sortEv});
     });
-    return this._timeSortedData;
-  }
-
-  _sortPrices() {
-    let priceArr = this._eventsData.map((ele) => {
-      return ele.price;
-    }).sort((a, b) => a - b).reverse();
-    new Set(priceArr).forEach((price) => {
-      const priceEv = this._eventsData.filter((el) => {
-        return el.price === price;
-      });
-      this._priceSortedData.push({date: ``, counter: ``, events: priceEv});
-    });
-    return this._priceSortedData;
+    return array;
   }
 
   getTotalData() {
@@ -101,7 +85,7 @@ export class DataController {
 
   init() {
     this._sortEvents();
-    this._sortTimes();
-    this._sortPrices();
+    this._sortTimesAndPrices(`timeDuration`, sortDates, this._timeSortedData);
+    this._sortTimesAndPrices(`price`, sortNumbers, this._priceSortedData);
   }
 }

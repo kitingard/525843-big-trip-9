@@ -54,12 +54,12 @@ export class EventEdit extends AbstractComponent {
         <label class="visually-hidden" for="event-start-time-1">
           From
         </label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${moment(this._event.startTime).format(`D[/]M[/]YY[/] HH:mm`)}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${moment(this._event.startTime).format(`D/M/YY HH:mm`)}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">
           To
         </label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${moment(this._event.endTime).format(`D[/]M[/]YY[/] HH:mm`)}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${moment(this._event.endTime).format(`D/M/YY HH:mm`)}">
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -73,7 +73,7 @@ export class EventEdit extends AbstractComponent {
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
 
-      <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
+      <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${this._event.isFavorite ? `checked` : ``}>
       <label class="event__favorite-btn" for="event-favorite-1">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
