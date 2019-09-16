@@ -11,7 +11,8 @@ export class TripController {
   constructor(container, data) {
     this._container = container;
     this._sortData = `event`;
-    this._data = data;
+    this._dataController = data;
+    this._data = this._dataController.getSortedData(this._sortData);
     this._daysList = new DaysList();
     this._sort = new Sort(this._sortData);
   }
@@ -19,7 +20,7 @@ export class TripController {
   init() {
     render(this._container, this._sort.getElement(), Position.AFTERBEGIN);
     render(this._container, this._daysList.getElement(), Position.BEFOREEND);
-    this._data.get(this._sortData).map((day) => this._renderDay(day));
+    this._data.map((day) => this._renderDay(day));
 
     this._sort.getElement().addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
   }
@@ -29,7 +30,8 @@ export class TripController {
     const eventsContainer = day.getElement().querySelector(`.trip-events__list`);
 
     render(this._daysList.getElement(), day.getElement(), Position.BEFOREEND);
-    day.getEvents().map((elem) => this._renderEvent(elem, eventsContainer, day.getEvents()));
+    day.getEvents().map((elem) => this._renderEvent(elem, eventsContainer, data));
+    this._reloadData();
   }
 
   _renderEvent(evData, container, dayData) {
@@ -54,7 +56,7 @@ export class TripController {
       const updatedEvent = new EventMock();
 
       updatedEvent.setData({
-        description: dayData[dayData.findIndex((it) => it === evData)].description,
+        description: dayData.events[dayData.events.findIndex((it) => it === evData)].description,
         type: formData.get(`event-type`),
         city: formData.get(`event-destination`),
         price: formData.get(`event-price`),
@@ -94,14 +96,23 @@ export class TripController {
           },
         ],
       });
-     
-      dayData[dayData.findIndex((it) => it === evData)] = updatedEvent.getData();
 
       this._daysList.removeElement();
-      render(this._container, this._daysList.getElement(), Position.BEFOREEND);
-      this._data.get(this._sortData).map((day) => this._renderDay(day));
 
-      container.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+      render(this._container, this._daysList.getElement(), Position.BEFOREEND);
+
+      // this._getUpdatedData(dayData, eventsList, evData, updatedEvent.getData());
+      // console.log(`day data   mmmm    `, dayData)
+      // this._sortData === `event` ? this._data[dayData.counter - 1].events[eventsList.findIndex((it) => it === evData)] = updatedEvent.getData() : this._data[dayData.count].events[eventsList.findIndex((it) => it === evData)] = updatedEvent.getData();
+
+      this._sortData === `event` ?
+        this._data[dayData.counter - 1].events[dayData.events.findIndex((it) => it === evData)] = updatedEvent.getData()
+      :
+        this._data[dayData.count].events[dayData.events.findIndex((it) => it === evData)] = updatedEvent.getData();
+
+      this._dataController.setData(this._data);
+
+      this._dataController.getSortedData(this._sortData).map((day) => this._renderDay(day));
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
@@ -126,6 +137,17 @@ export class TripController {
     this._sort.getElement().addEventListener(`click`, (e) => this._onSortLinkClick(e));
 
     this._daysList.getElement().innerHTML = ``;
-    this._data.get(this._sortData).map((day) => this._renderDay(day));
+    this._dataController.getSortedData(this._sortData).map((day) => this._renderDay(day));
+    this._reloadData();
+  }
+
+  _reloadData() {
+    console.log(`обновили`, this._data = this._dataController.getSortedData(this._sortData))
+    return this._data = this._dataController.getSortedData(this._sortData);
+  }
+
+  _getUpdatedData(day, list, event, updatedEventData) {
+    this._sortData === `event` ? this._data[day.counter].events[list.findIndex((it) => it === event)] = updatedEventData : this._data[day.count].events[list.findIndex((it) => it === event)] = updatedEventData;
+    this._dataController.setData(this._data);
   }
 }

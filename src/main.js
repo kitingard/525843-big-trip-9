@@ -7,7 +7,7 @@ const sortContainer = document.querySelector(`.trip-events`);
 const eventMock = new EventMock();
 const dataController = new DataController(eventMock);
 const headerController = new HeaderController(dataController);
-const tripController = new TripController(sortContainer, dataController.getSortedData());
+const tripController = new TripController(sortContainer, dataController);
 
 dataController.init();
 headerController.init();
