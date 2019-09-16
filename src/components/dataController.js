@@ -4,8 +4,16 @@ import {sortDates, sortNumbers} from "./utils";
 export class DataController {
   constructor(event) {
     this._event = event;
-    this._eventsData = new Array(9).fill(``).map((elem) => elem = this._event.init());
+    this._eventsData = this._getEventsData();
     this._eventSortedData = this._sortEvents();
+  }
+
+  _getEventsData() {
+    const defaultEventsData = new Array(9).fill(``).map((el) => {
+      el = this._event.init();
+      return el;
+    });
+    return defaultEventsData;
   }
 
   _sortEvents() {
@@ -73,11 +81,11 @@ export class DataController {
   }
 
   setData(data) {
-    console.log(`old data`, this._eventsData)
+    // console.log(`old data`, this._eventsData)
     this._eventsData = [];
     const newData = data.map((el) => el.events);
-    newData.map((it) => it.map((elem) => this._eventsData.push(elem)))
-    console.log(`new data `, this._eventsData)
+    newData.map((it) => it.map((elem) => this._eventsData.push(elem)));
+    // console.log(`new data `, this._eventsData)
     return this._eventsData;
   }
 
@@ -87,9 +95,9 @@ export class DataController {
       [`time`, this._sortTimesAndPrices(`timeDuration`, sortDates)],
       [`price`, this._sortTimesAndPrices(`price`, sortNumbers)]
     ]);
-    console.log(`sort events`, this._sortEvents());
-    console.log(`time events`, this._sortTimesAndPrices(`timeDuration`, sortDates));
-    console.log(`price events`, this._sortTimesAndPrices(`price`, sortNumbers));
+    // console.log(`sort events`, this._sortEvents());
+    // console.log(`time events`, this._sortTimesAndPrices(`timeDuration`, sortDates));
+    // console.log(`price events`, this._sortTimesAndPrices(`price`, sortNumbers));
     return sortedData.get(param);
   }
 

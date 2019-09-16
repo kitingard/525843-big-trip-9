@@ -46,9 +46,9 @@ export class EventMock {
         price: 40,
         checked: Boolean(Math.round(Math.random())),
       },
-    ]
+    ];
   }
-  
+
   getDuration() {
     const duration = moment.duration(moment(this.endTime).diff(moment(this.startTime)));
     this.timeDuration = duration.as(`milliseconds`);
@@ -59,7 +59,7 @@ export class EventMock {
     this.city = this._cities[getRandom(5)];
     return this.city;
   }
-  
+
   _getStartTime() {
     this.startTime = Date.now() + 1 + getRandom(3) * 24 * 60 * 60 * 1000;
     return this.startTime;
@@ -121,7 +121,7 @@ export class EventMock {
       price: this.price,
       description: this.description,
       options: this.options,
-    }
+    };
   }
 
   init() {
@@ -135,4 +135,4 @@ export class EventMock {
 
     return this.getData();
   }
-};
+}
