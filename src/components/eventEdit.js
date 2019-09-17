@@ -5,6 +5,8 @@ export class EventEdit extends AbstractComponent {
   constructor(event) {
     super();
     this._event = event;
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
@@ -24,9 +26,6 @@ export class EventEdit extends AbstractComponent {
               <input id="event-type-${elem}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${elem}" ${elem === this._event.type ? `checked` : ``}>
               <label class="event__type-label  event__type-label--${elem}" for="event-type-${elem}-1">${elem}</label>
             </div>`).join(``)}
-
-
-
           </fieldset>
 
           <fieldset class="event__type-group">
@@ -121,5 +120,67 @@ export class EventEdit extends AbstractComponent {
       </section>
     </section>
     </form>`;
+  }
+
+  // _getOptions(optionsArray, targetOption) {
+  //   const editChecked = elem.checked ? `` : `checked`;
+  //   const dataChecked = elem.checked ? `checked` : ``;
+  //   const getOptionElement = (check) => `<div class="event__offer-selector">
+  //       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${elem.value}-1" type="checkbox" name="event-offer-${elem.value} ${check}">
+  //       <label class="event__offer-label" for="event-offer-${elem.value}-1">
+  //         <span class="event__offer-title">${elem.title}</span>
+  //         &plus;
+  //         &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
+  //       </label>
+  //     </div>`;
+  //   optionsArray.map((elem) => {
+  //     if (targetOption.includes(elem.value)) {
+  //       return getOptionElement(editChecked)
+  //     } else {
+  //       return editChecked(dataChecked)
+  //     }
+  //   }).join(``)
+  // }
+
+  _subscribeOnEvents() {
+    // console.log(`work hard!!`)
+
+    this.getElement().querySelector(`.event__type-btn`).addEventListener(`click`, (evt) => {
+      // evt.preventDefault();
+      // console.log(evt)
+      this.getElement().querySelector(`.event__type-list`).classList.remove(`visually-hidden`);
+      Array.from(this.getElement()
+      .querySelectorAll(`.event__type-item`)).map((type) => type.addEventListener(`click`, (evt) => this.getElement().querySelector(`.event__type-list`).classList.add(`visually-hidden`)))
+    })
+
+    Array.from(this.getElement()
+      .querySelectorAll(`.event__offer-checkbox`)).map((offer) => offer.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        
+        // console.log(evt.target.name)
+        // console.log(this._event.options.map((elem) => evt.target.name.includes(elem.value)));
+
+        this.getElement().querySelector(`.event__available-offers`).innerHTML = this._event.options.map((elem) => {
+          if (evt.target.name.includes(elem.value)) {
+            return `<div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${elem.value}-1" type="checkbox" name="event-offer-${elem.value}" ${elem.checked ? `` : `checked`}>
+            <label class="event__offer-label" for="event-offer-${elem.value}-1">
+              <span class="event__offer-title">${elem.title}</span>
+              &plus;
+              &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
+            </label>
+          </div>`
+          } else {
+            return `<div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${elem.value}-1" type="checkbox" name="event-offer-${elem.value}" ${elem.checked ? `checked` : ``}>
+            <label class="event__offer-label" for="event-offer-${elem.value}-1">
+              <span class="event__offer-title">${elem.title}</span>
+              &plus;
+              &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
+            </label>
+          </div>`;
+          }
+        }).join(``);
+    }));
   }
 }
