@@ -1,4 +1,5 @@
 import moment from "moment";
+import {getTypeDescription} from "./utils";
 import {AbstractComponent} from "./abstract-component";
 
 export class EventEdit extends AbstractComponent {
@@ -9,33 +10,76 @@ export class EventEdit extends AbstractComponent {
     this._subscribeOnEvents();
   }
 
+  _getEventTypeOptions(event) {
+    return `<fieldset class="event__type-group">
+    <legend class="visually-hidden">Transfer</legend>
+      ${event.transfer.map((elem) => `<div class="event__type-item">
+        <input id="event-type-${elem}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${elem}" ${elem === this._event.type ? `checked` : ``}>
+        <label class="event__type-label  event__type-label--${elem}" for="event-type-${elem}-1">${elem}</label>
+      </div>`).join(``)}
+    </fieldset>
+
+    <fieldset class="event__type-group">
+      <legend class="visually-hidden">Activity</legend>
+      ${event.activity.map((element) => `<div class="event__type-item">
+      <input id="event-type-${element}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element}" ${element === this._event.type ? `checked` : ``}>
+      <label class="event__type-label  event__type-label--${element}" for="event-type-${element}-1">${element}</label>
+    </div>`).join(``)}
+    </fieldset>`;
+  }
+
+  _getIcon(type) {
+    return `<span class="visually-hidden">Choose event type</span>
+    <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon"></img>`;
+  }
+
+  _getOption() {
+    return this._event.options.map((elem) => `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${elem.value}-1" type="checkbox" name="event-offer-${elem.value}" ${elem.checked ? `checked` : ``}>
+      <label class="event__offer-label" for="event-offer-${elem.value}-1">
+        <span class="event__offer-title">${elem.title}</span>
+        &plus;
+        &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
+      </label>
+    </div>`).join(``);
+  }
+
+  _setTypeOptionListener() {
+    Array.from(this.getElement().querySelectorAll(`.event__type-item`)).map((type) => type.addEventListener(`click`, (evt) => {
+      if (evt.target.tagName === `LABEL`) {
+        return;
+      } else {
+        this.getElement().querySelector(`.event__type-btn`).innerHTML = this._getIcon(evt.target.value);
+        this.getElement().querySelector(`.event__type-output`).innerText = getTypeDescription(evt.target.value);
+      }
+    }));
+  }
+
+  _subscribeOnEvents() {
+    this.getElement().querySelector(`.event__type-btn`).addEventListener(`click`, () => {
+      this._setTypeOptionListener();
+    });
+  }
+
+  getDefaulEventState() {
+    this.getElement().querySelector(`.event__available-offers`).innerHTML = this._getOption();
+    this.getElement().querySelector(`.event__type-btn`).innerHTML = this._getIcon(this._event.type);
+    this.getElement().querySelector(`.event__type-output`).innerText = getTypeDescription(this._event.type);
+    this.getElement().querySelector(`.event__type-list`).innerHTML = this._getEventTypeOptions(this._event);
+    this._setTypeOptionListener();
+  }
+
   getTemplate() {
     return `<form class="trip-events__item event  event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
-          <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${this._event.type}.png" alt="Event type icon">
+          ${this._getIcon(this._event.type)}
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
         <div class="event__type-list">
-          <fieldset class="event__type-group">
-            <legend class="visually-hidden">Transfer</legend>
-            ${this._event.transfer.map((elem) => `<div class="event__type-item">
-              <input id="event-type-${elem}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${elem}" ${elem === this._event.type ? `checked` : ``}>
-              <label class="event__type-label  event__type-label--${elem}" for="event-type-${elem}-1">${elem}</label>
-            </div>`).join(``)}
-          </fieldset>
-
-          <fieldset class="event__type-group">
-            <legend class="visually-hidden">Activity</legend>
-            ${this._event.activity.map((element) => `<div class="event__type-item">
-            <input id="event-type-${element}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element}" ${element === this._event.type ? `checked` : ``}>
-            <label class="event__type-label  event__type-label--${element}" for="event-type-${element}-1">${element}</label>
-          </div>`).join(``)}
-
-          </fieldset>
+          ${this._getEventTypeOptions(this._event)}
         </div>
       </div>
 
@@ -91,16 +135,7 @@ export class EventEdit extends AbstractComponent {
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
         <div class="event__available-offers">
-
-        ${this._event.options.map((elem) => `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${elem.value}-1" type="checkbox" name="event-offer-${elem.value}" ${elem.checked ? `checked` : ``}>
-              <label class="event__offer-label" for="event-offer-${elem.value}-1">
-                <span class="event__offer-title">${elem.title}</span>
-                &plus;
-                &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
-              </label>
-            </div>`).join(``)}
-
+        ${this._getOption()}
         </div>
       </section>
 
@@ -120,67 +155,5 @@ export class EventEdit extends AbstractComponent {
       </section>
     </section>
     </form>`;
-  }
-
-  // _getOptions(optionsArray, targetOption) {
-  //   const editChecked = elem.checked ? `` : `checked`;
-  //   const dataChecked = elem.checked ? `checked` : ``;
-  //   const getOptionElement = (check) => `<div class="event__offer-selector">
-  //       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${elem.value}-1" type="checkbox" name="event-offer-${elem.value} ${check}">
-  //       <label class="event__offer-label" for="event-offer-${elem.value}-1">
-  //         <span class="event__offer-title">${elem.title}</span>
-  //         &plus;
-  //         &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
-  //       </label>
-  //     </div>`;
-  //   optionsArray.map((elem) => {
-  //     if (targetOption.includes(elem.value)) {
-  //       return getOptionElement(editChecked)
-  //     } else {
-  //       return editChecked(dataChecked)
-  //     }
-  //   }).join(``)
-  // }
-
-  _subscribeOnEvents() {
-    // console.log(`work hard!!`)
-
-    this.getElement().querySelector(`.event__type-btn`).addEventListener(`click`, (evt) => {
-      // evt.preventDefault();
-      // console.log(evt)
-      this.getElement().querySelector(`.event__type-list`).classList.remove(`visually-hidden`);
-      Array.from(this.getElement()
-      .querySelectorAll(`.event__type-item`)).map((type) => type.addEventListener(`click`, (evt) => this.getElement().querySelector(`.event__type-list`).classList.add(`visually-hidden`)))
-    })
-
-    Array.from(this.getElement()
-      .querySelectorAll(`.event__offer-checkbox`)).map((offer) => offer.addEventListener(`click`, (evt) => {
-        evt.preventDefault();
-        
-        // console.log(evt.target.name)
-        // console.log(this._event.options.map((elem) => evt.target.name.includes(elem.value)));
-
-        this.getElement().querySelector(`.event__available-offers`).innerHTML = this._event.options.map((elem) => {
-          if (evt.target.name.includes(elem.value)) {
-            return `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${elem.value}-1" type="checkbox" name="event-offer-${elem.value}" ${elem.checked ? `` : `checked`}>
-            <label class="event__offer-label" for="event-offer-${elem.value}-1">
-              <span class="event__offer-title">${elem.title}</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
-            </label>
-          </div>`
-          } else {
-            return `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${elem.value}-1" type="checkbox" name="event-offer-${elem.value}" ${elem.checked ? `checked` : ``}>
-            <label class="event__offer-label" for="event-offer-${elem.value}-1">
-              <span class="event__offer-title">${elem.title}</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
-            </label>
-          </div>`;
-          }
-        }).join(``);
-    }));
   }
 }

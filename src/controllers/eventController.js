@@ -1,7 +1,7 @@
-import {Event} from "./event";
-import {EventEdit} from "./eventEdit";
-import {EventMock} from "./data";
-import {render, Position} from "./utils";
+import {Event} from "../components/event";
+import {EventEdit} from "../components/eventEdit";
+import {EventMock} from "../components/data";
+import {render, Position} from "../components/utils";
 import moment from "moment";
 
 export class EventController {
@@ -92,8 +92,9 @@ export class EventController {
 
     this._eventEdit.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
-
+      this._eventEdit.getDefaulEventState();
       container.replaceChild(this._eventView.getElement(), this._eventEdit.getElement());
+
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 

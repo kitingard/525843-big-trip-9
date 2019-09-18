@@ -1,9 +1,8 @@
 import {EventController} from "./eventController";
-import {Day} from "./day";
-import {DaysList} from "./daysList";
-import {render, Position} from "./utils";
-import {Sort} from "./sort";
-
+import {Day} from "../components/day";
+import {DaysList} from "../components/daysList";
+import {render, Position} from "../components/utils";
+import {Sort} from "../components/sort";
 
 export class TripController {
   constructor(container, data) {
@@ -77,6 +76,7 @@ export class TripController {
   }
 
   _reloadData() {
-    return this._data = this._dataController.getSortedData(this._sortTrigger);
+    this._data = this._dataController.getSortedData(this._sortTrigger);
+    return this._data;
   }
 }

@@ -1,6 +1,6 @@
-import {TripController} from "./components/tripController";
-import {DataController} from "./components/dataController";
-import {HeaderController} from "./components/headerController";
+import {TripController} from "./controllers/tripController";
+import {DataController} from "./controllers/dataController";
+import {HeaderController} from "./controllers/headerController";
 import {EventMock} from "./components/data";
 
 const sortContainer = document.querySelector(`.trip-events`);

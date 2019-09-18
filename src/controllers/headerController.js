@@ -1,7 +1,7 @@
-import {Route} from "./route";
-import {Menu} from "./menu";
-import {Filter} from "./filter";
-import {render, Position} from "./utils";
+import {Route} from "../components/route";
+import {Menu} from "../components/menu";
+import {Filter} from "../components/filter";
+import {render, Position} from "../components/utils";
 
 export class HeaderController {
   constructor(data) {

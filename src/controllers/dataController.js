@@ -1,5 +1,5 @@
 import moment from "moment";
-import {sortDates, sortNumbers} from "./utils";
+import {sortDates, sortNumbers} from "../components/utils";
 
 export class DataController {
   constructor(event) {
@@ -81,11 +81,9 @@ export class DataController {
   }
 
   setData(data) {
-    // console.log(`old data`, this._eventsData)
     this._eventsData = [];
     const newData = data.map((el) => el.events);
     newData.map((it) => it.map((elem) => this._eventsData.push(elem)));
-    // console.log(`new data `, this._eventsData)
     return this._eventsData;
   }
 
@@ -95,9 +93,6 @@ export class DataController {
       [`time`, this._sortTimesAndPrices(`timeDuration`, sortDates)],
       [`price`, this._sortTimesAndPrices(`price`, sortNumbers)]
     ]);
-    // console.log(`sort events`, this._sortEvents());
-    // console.log(`time events`, this._sortTimesAndPrices(`timeDuration`, sortDates));
-    // console.log(`price events`, this._sortTimesAndPrices(`price`, sortNumbers));
     return sortedData.get(param);
   }
 

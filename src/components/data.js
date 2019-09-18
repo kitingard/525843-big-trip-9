@@ -1,4 +1,5 @@
 import moment from "moment";
+import {getTypeDescription} from "./utils";
 const getRandom = (count) => Math.floor(Math.random() * count);
 
 export class EventMock {
@@ -76,23 +77,6 @@ export class EventMock {
     return this.type;
   }
 
-  getTypeDescription() {
-    const typeDescriptions = new Map([
-      [`bus`, `Bus to `],
-      [`check-in`, `Check into `],
-      [`drive`, `Drive to `],
-      [`flight`, `Flight to `],
-      [`restaurant`, `Dinner in `],
-      [`ship`, `Sailing in `],
-      [`sightseeing`, `Museum in `],
-      [`taxi`, `Taxi to `],
-      [`train`, `Train to `],
-      [`transport`, `Transport to `]
-    ]);
-    this.typeDescription = typeDescriptions.get(this.type);
-    return this.typeDescription + this.city;
-  }
-
   setData(data) {
     this.description = data.description;
     this.type = data.type;
@@ -102,14 +86,14 @@ export class EventMock {
     this.endTime = data.endTime;
     this.isFavorite = data.isFavorite;
     this.options = data.options;
-    this.getTypeDescription();
+    this.typeDescription = getTypeDescription(this.type);
     this.getDuration();
   }
 
   getData() {
     return {
       type: this.type,
-      typeDescription: this.typeDescription,
+      typeDescription: getTypeDescription(this.type),
       city: this.city,
       startTime: this.startTime,
       endTime: this.endTime,
@@ -129,8 +113,6 @@ export class EventMock {
     this._getRandomType();
     this._getStartTime();
     this._getEndTime();
-
-    this.getTypeDescription();
     this.getDuration();
 
     return this.getData();
