@@ -29,3 +29,21 @@ export const unrender = (element) => {
 };
 
 export const sortDates = ((a, b) => moment(a, `X`) - moment(b, `X`));
+
+export const sortNumbers = (((a, b) => a - b));
+
+export const getTypeDescription = ((type) => {
+  const typeDescriptions = new Map([
+    [`bus`, `Bus to `],
+    [`check-in`, `Check-in in `],
+    [`drive`, `Drive to `],
+    [`flight`, `Flight to `],
+    [`restaurant`, `Dinner in `],
+    [`ship`, `Sailing in `],
+    [`sightseeing`, `Sightseeing in `],
+    [`taxi`, `Taxi to `],
+    [`train`, `Train to `],
+    [`transport`, `Transport to `]
+  ]);
+  return typeDescriptions.get(type);
+});

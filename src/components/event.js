@@ -24,7 +24,7 @@ export class Event extends AbstractComponent {
     if (optionsSet.has(null)) {
       optionsSet.delete(null);
     }
-    return Array.from(optionsSet).length > 2 ? Array.from(optionsSet).slice(0, 2).join(``) : Array.from(optionsSet).join(``);
+    return Array.from(optionsSet).length > 3 ? Array.from(optionsSet).slice(0, 3).join(``) : Array.from(optionsSet).join(``);
   }
 
   getTemplate() {
