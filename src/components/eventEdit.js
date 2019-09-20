@@ -1,6 +1,12 @@
+import flatpicr from "flatpickr";
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/light.css';
 import moment from "moment";
-import {getTypeDescription} from "./utils";
 import {AbstractComponent} from "./abstract-component";
+import {getTypeDescription} from "./utils";
+import {iconTypeView} from "./iconTypeView";
+import {optionsView} from "./optionsView";
+import {typeOptionsView} from "./typeOptionsView";
 
 export class EventEdit extends AbstractComponent {
   constructor(event) {
@@ -11,37 +17,15 @@ export class EventEdit extends AbstractComponent {
   }
 
   _getEventTypeOptions(event) {
-    return `<fieldset class="event__type-group">
-    <legend class="visually-hidden">Transfer</legend>
-      ${event.transfer.map((elem) => `<div class="event__type-item">
-        <input id="event-type-${elem}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${elem}" ${elem === this._event.type ? `checked` : ``}>
-        <label class="event__type-label  event__type-label--${elem}" for="event-type-${elem}-1">${elem}</label>
-      </div>`).join(``)}
-    </fieldset>
-
-    <fieldset class="event__type-group">
-      <legend class="visually-hidden">Activity</legend>
-      ${event.activity.map((element) => `<div class="event__type-item">
-      <input id="event-type-${element}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element}" ${element === this._event.type ? `checked` : ``}>
-      <label class="event__type-label  event__type-label--${element}" for="event-type-${element}-1">${element}</label>
-    </div>`).join(``)}
-    </fieldset>`;
+    return typeOptionsView(event);
   }
 
   _getIcon(type) {
-    return `<span class="visually-hidden">Choose event type</span>
-    <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon"></img>`;
+    return iconTypeView(type);
   }
 
   _getOption() {
-    return this._event.options.map((elem) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${elem.value}-1" type="checkbox" name="event-offer-${elem.value}" ${elem.checked ? `checked` : ``}>
-      <label class="event__offer-label" for="event-offer-${elem.value}-1">
-        <span class="event__offer-title">${elem.title}</span>
-        &plus;
-        &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
-      </label>
-    </div>`).join(``);
+    return optionsView();
   }
 
   _setTypeOptionListener() {
@@ -55,10 +39,40 @@ export class EventEdit extends AbstractComponent {
     }));
   }
 
+  _getStartTime() {
+    return flatpicr(this.getElement().querySelector(`#event-start-time-1`), {
+      altInput: true,
+      allowInput: true,
+      defaultDate: moment(this._event.startTime).toDate(),
+      dateFormat: "d/m/y H:i",
+      altFormat: "d/m/y H:i",
+      altInput: true,
+      enableTime: true,
+      time_24hr: true,
+    });
+  }
+
+  _getEndTime() {
+    return flatpicr(this.getElement().querySelector(`#event-end-time-1`), {
+      altInput: true,
+      allowInput: true,
+      minDate: moment(this._event.startTime).toDate(),
+      defaultDate: moment(this._event.endTime).toDate(),
+      dateFormat: "d/m/y H:i",
+      altFormat: "d/m/y H:i",
+      altInput: true,
+      enableTime: true,
+      time_24hr: true,
+    });
+  }
+
   _subscribeOnEvents() {
     this.getElement().querySelector(`.event__type-btn`).addEventListener(`click`, () => {
       this._setTypeOptionListener();
     });
+
+    this._getStartTime();
+    this._getEndTime();
   }
 
   getDefaulEventState() {
@@ -67,6 +81,8 @@ export class EventEdit extends AbstractComponent {
     this.getElement().querySelector(`.event__type-output`).innerText = getTypeDescription(this._event.type);
     this.getElement().querySelector(`.event__type-list`).innerHTML = this._getEventTypeOptions(this._event);
     this._setTypeOptionListener();
+    this._getStartTime();
+    this._getEndTime();
   }
 
   getTemplate() {
