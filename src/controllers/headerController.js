@@ -9,16 +9,15 @@ export class HeaderController {
     this._route = new Route(this._data);
     this._menu = new Menu();
     this._filter = new Filter();
+    this._routeContainer = document.querySelector(`.trip-info`);
+    this._totalCostContainer = document.querySelector(`.trip-info__cost-value`);
+    this._filtersContainer = document.querySelector(`.trip-main__trip-controls`);
   }
 
   init() {
-    const routeContainer = document.querySelector(`.trip-info`);
-    const filtersContainer = document.querySelector(`.trip-main__trip-controls`);
-    const totalCostContainer = document.querySelector(`.trip-info__cost-value`);
-
-    render(routeContainer, this._route.getElement(), Position.AFTERBEGIN);
-    render(filtersContainer, this._menu.getElement(), Position.BEFOREEND);
-    render(filtersContainer, this._filter.getElement(), Position.BEFOREEND);
-    totalCostContainer.innerText = this._data.getTotalData();
+    render(this._routeContainer, this._route.getElement(), Position.AFTERBEGIN);
+    render(this._filtersContainer, this._menu.getElement(), Position.BEFOREEND);
+    render(this._filtersContainer, this._filter.getElement(), Position.BEFOREEND);
+    this._totalCostContainer.innerText = this._data.getTotalData();
   }
 }

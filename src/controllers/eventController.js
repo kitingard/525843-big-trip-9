@@ -44,11 +44,6 @@ export class EventController {
       const formData = new FormData(this._eventEdit.getElement());
       const updatedEvent = new EventMock();
 
-      console.log(formData)
-      console.log(`старт тайм `, formData.get(`event-start-time`))
-      console.log(`старт тайм in moment `, moment(formData.get(`event-start-time`)))
-      console.log(`НЕ старт тайм `, formData.get(`event-end-time`))
-
       updatedEvent.setData({
         description: dayData.events[dayData.events.findIndex((it) => it === evData)].description,
         type: formData.get(`event-type`),

@@ -12,20 +12,33 @@ export class EventEdit extends AbstractComponent {
   constructor(event) {
     super();
     this._event = event;
+    this._endDate = flatpicr(this.getElement().querySelector(`#event-end-time-1`), {
+      allowInput: true,
+      minDate: moment(this._event.endTime).toDate(),
+      defaultDate: moment(this._event.endTime).toDate(),
+      dateFormat: `d/m/y H:i`,
+      altFormat: `d/m/y H:i`,
+      altInput: true,
+      enableTime: true,
+    });
+    this._startDate = flatpicr(this.getElement().querySelector(`#event-start-time-1`), {
+      allowInput: true,
+      defaultDate: moment(this._event.startTime).toDate(),
+      dateFormat: `d/m/y H:i`,
+      altFormat: `d/m/y H:i`,
+      altInput: true,
+      enableTime: true,
+      onClose: (selectedDates) => {
+        if (this._endDate.selectedDates[0] < moment(selectedDates[0]).toDate()) {
+          this._endDate.set(`minDate`, moment(selectedDates[0]).toDate());
+          this._endDate.setDate(moment(selectedDates[0]).toDate());
+        } else {
+          return;
+        }
+      }
+    });
 
     this._subscribeOnEvents();
-  }
-
-  _getEventTypeOptions(event) {
-    return typeOptionsView(event);
-  }
-
-  _getIcon(type) {
-    return iconTypeView(type);
-  }
-
-  _getOption() {
-    return optionsView();
   }
 
   _setTypeOptionListener() {
@@ -33,56 +46,30 @@ export class EventEdit extends AbstractComponent {
       if (evt.target.tagName === `LABEL`) {
         return;
       } else {
-        this.getElement().querySelector(`.event__type-btn`).innerHTML = this._getIcon(evt.target.value);
+        this.getElement().querySelector(`.event__type-btn`).innerHTML = iconTypeView(evt.target.value);
         this.getElement().querySelector(`.event__type-output`).innerText = getTypeDescription(evt.target.value);
       }
     }));
   }
 
-  _getStartTime() {
-    return flatpicr(this.getElement().querySelector(`#event-start-time-1`), {
-      altInput: true,
-      allowInput: true,
-      defaultDate: moment(this._event.startTime).toDate(),
-      dateFormat: "d/m/y H:i",
-      altFormat: "d/m/y H:i",
-      altInput: true,
-      enableTime: true,
-      time_24hr: true,
-    });
-  }
-
-  _getEndTime() {
-    return flatpicr(this.getElement().querySelector(`#event-end-time-1`), {
-      altInput: true,
-      allowInput: true,
-      minDate: moment(this._event.startTime).toDate(),
-      defaultDate: moment(this._event.endTime).toDate(),
-      dateFormat: "d/m/y H:i",
-      altFormat: "d/m/y H:i",
-      altInput: true,
-      enableTime: true,
-      time_24hr: true,
-    });
+  _reloadTime(param) {
+    return param === `start` ? this._startDate : this._endDate;
   }
 
   _subscribeOnEvents() {
     this.getElement().querySelector(`.event__type-btn`).addEventListener(`click`, () => {
       this._setTypeOptionListener();
     });
-
-    this._getStartTime();
-    this._getEndTime();
   }
 
   getDefaulEventState() {
-    this.getElement().querySelector(`.event__available-offers`).innerHTML = this._getOption();
-    this.getElement().querySelector(`.event__type-btn`).innerHTML = this._getIcon(this._event.type);
+    this.getElement().querySelector(`.event__available-offers`).innerHTML = optionsView(this._event.options);
+    this.getElement().querySelector(`.event__type-btn`).innerHTML = iconTypeView(this._event.type);
     this.getElement().querySelector(`.event__type-output`).innerText = getTypeDescription(this._event.type);
-    this.getElement().querySelector(`.event__type-list`).innerHTML = this._getEventTypeOptions(this._event);
+    this.getElement().querySelector(`.event__type-list`).innerHTML = typeOptionsView(this._event, this._event.type);
     this._setTypeOptionListener();
-    this._getStartTime();
-    this._getEndTime();
+    this._reloadTime(`start`);
+    this._reloadTime(`end`);
   }
 
   getTemplate() {
@@ -90,12 +77,12 @@ export class EventEdit extends AbstractComponent {
     <header class="event__header">
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
-          ${this._getIcon(this._event.type)}
+          ${iconTypeView(this._event.type)}
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
         <div class="event__type-list">
-          ${this._getEventTypeOptions(this._event)}
+          ${typeOptionsView(this._event, this._event.type)}
         </div>
       </div>
 
@@ -151,7 +138,7 @@ export class EventEdit extends AbstractComponent {
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
         <div class="event__available-offers">
-        ${this._getOption()}
+        ${optionsView(this._event.options)}
         </div>
       </section>
 
