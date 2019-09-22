@@ -16,7 +16,7 @@ export class Day extends AbstractComponent {
     return `<li class="trip-days__item  day">
     <div class="day__info">
       <span class="day__counter">${this._counter}</span>
-      <time class="day__date" datetime="${this._date}">${this._date}</time>
+      <time class="day__date" datetime="${this._date.slice(0, -3)}">${this._date.slice(0, -3)}</time>
     </div>
 
     <ul class="trip-events__list">

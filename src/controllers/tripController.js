@@ -18,14 +18,6 @@ export class TripController {
     this._onChangeView = this._onChangeView.bind(this);
   }
 
-  init() {
-    render(this._container, this._sort.getElement(), Position.AFTERBEGIN);
-    render(this._container, this._daysList.getElement(), Position.BEFOREEND);
-    this._data.map((day) => this._renderDay(day));
-
-    this._sort.getElement().addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
-  }
-
   _renderDay(data) {
     const day = new Day(data);
     const eventsContainer = day.getElement().querySelector(`.trip-events__list`);
@@ -78,5 +70,13 @@ export class TripController {
   _reloadData() {
     this._data = this._dataController.getSortedData(this._sortTrigger);
     return this._data;
+  }
+
+  init() {
+    render(this._container, this._sort.getElement(), Position.AFTERBEGIN);
+    render(this._container, this._daysList.getElement(), Position.BEFOREEND);
+    this._data.map((day) => this._renderDay(day));
+
+    this._sort.getElement().addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
   }
 }

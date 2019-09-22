@@ -18,16 +18,15 @@ export class DataController {
 
   _sortEvents() {
     const eventSortedData = [];
-    let array = [];
-    this._eventsData.map((element) => {
-      array.push(moment(element.startTime).format(`MMM D`));
+    const array = [];
+    this._eventsData.forEach((element) => {
+      array.push(moment(element.startTime).format(`MMM D YY`));
     });
     const startTimeSet = new Set(array.sort(sortDates));
     Array.from(startTimeSet).forEach((time, index) => {
-      let events = [];
-      events = this._eventsData.filter((elem) => {
-        return moment(elem.startTime).format(`MMM D`) === time;
-      });
+      const events = this._eventsData.filter((elem) => {
+        return moment(elem.startTime).format(`MMM D YY`) === time;
+      }).sort(sortDates).reverse();
       eventSortedData.push({date: time, counter: index + 1, events});
     });
     return eventSortedData;
@@ -50,10 +49,10 @@ export class DataController {
 
   getTotalData() {
     let priceArray = [];
-    this._eventSortedData.map((day) => {
-      day.events.map((ev) => {
+    this._eventSortedData.forEach((day) => {
+      day.events.forEach((ev) => {
         priceArray.push(ev.price);
-        ev.options.map((option) => {
+        ev.options.forEach((option) => {
           if (option.checked) {
             priceArray.push(option.price);
           }
@@ -65,8 +64,8 @@ export class DataController {
   }
 
   getDates() {
-    const first = this._eventSortedData[0].date;
-    const last = this._eventSortedData[this._eventSortedData.length - 1].date;
+    const first = this._eventSortedData[0].date.slice(0, -3);
+    const last = this._eventSortedData[this._eventSortedData.length - 1].date.slice(0, -3);
     return first.slice(0, 3) === last.slice(0, 3) ? first + ` - ` + last.slice(3) : first + ` - ` + last;
   }
 
@@ -83,7 +82,7 @@ export class DataController {
   setData(data) {
     this._eventsData = [];
     const newData = data.map((el) => el.events);
-    newData.map((it) => it.map((elem) => this._eventsData.push(elem)));
+    newData.forEach((it) => it.forEach((elem) => this._eventsData.push(elem)));
     return this._eventsData;
   }
 

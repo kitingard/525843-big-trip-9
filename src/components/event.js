@@ -1,5 +1,6 @@
 import moment from "moment";
 import {AbstractComponent} from "./abstract-component";
+import {onOptionsView} from "./onOptionsView";
 
 export class Event extends AbstractComponent {
   constructor(event) {
@@ -10,13 +11,7 @@ export class Event extends AbstractComponent {
   getOptions() {
     const optionsSet = new Set(this._event.options.map((elem) => {
       if (elem.checked) {
-        return `<ul class="event__selected-offers">
-                <li class="event__offer">
-                  <span class="event__offer-title">${elem.title}</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">${elem.price}</span>
-                </li>
-              </ul>`;
+        return onOptionsView(elem);
       } else {
         return null;
       }
@@ -25,6 +20,16 @@ export class Event extends AbstractComponent {
       optionsSet.delete(null);
     }
     return Array.from(optionsSet).length > 3 ? Array.from(optionsSet).slice(0, 3).join(``) : Array.from(optionsSet).join(``);
+  }
+
+  _getTimeDuration() {
+    if (this._event.timeDuration < 60 * 60 * 1000) {
+      return moment.utc(this._event.timeDuration).format(`m[M]`);
+    } else if (this._event.timeDuration > 24 * 60 * 60 * 1000) {
+      return moment.utc(this._event.timeDuration).format(`D[D] H[H] m[M]`);
+    } else {
+      return moment.utc(this._event.timeDuration).format(`H[H] m[M]`);
+    }
   }
 
   getTemplate() {
@@ -41,7 +46,7 @@ export class Event extends AbstractComponent {
           &mdash;
           <time class="event__end-time" datetime="2019-03-18T11:00">${moment(this._event.endTime).format(`HH:mm`)}</time>
         </p>
-        <p class="event__duration">${moment.utc(this._event.timeDuration).format(`H[H] m[M]`)}</p>
+        <p class="event__duration">${this._getTimeDuration()}</p>
       </div>
 
       <p class="event__price">
