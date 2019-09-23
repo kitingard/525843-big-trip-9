@@ -4,18 +4,24 @@ import {EventMock} from "../components/data";
 import {render, Position} from "../components/utils";
 import moment from "moment";
 
+export const Mode = {
+  ADDING: `adding`,
+  DEFAULT: `default`,
+};
+
 export class EventController {
-  constructor(eventData, container, dayData, onDataChange, onChangeView, dayList) {
+  constructor(eventData, container, dayData, onDataChange, onChangeView, dayList, mode) {
     this._container = container;
     this._eventData = eventData;
     this._dayData = dayData;
     this._dayList = dayList;
     this._onDataChange = onDataChange;
     this._onChangeView = onChangeView;
+    this._mode = mode;
     this._eventView = new Event(this._eventData);
     this._eventEdit = new EventEdit(this._eventData);
 
-    this.create(this._eventData, this._container, this._dayData);
+    this.create(this._eventData, this._container, this._dayData, this._mode);
   }
 
   setDefaultView() {
@@ -24,10 +30,27 @@ export class EventController {
     }
   }
 
-  create(evData, container, dayData) {
+  create(evData, container, dayData, mode) {
+    let renderPosition = Position.BEFOREEND;
+    let currentView = this._eventView;
+
+    if (mode === Mode.ADDING) {
+      renderPosition = Position.AFTERBEGIN;
+      currentView = this._eventEdit;
+    }
+
     const onEscKeyDown = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
-        container.replaceChild(this._eventView.getElement(), this._eventEdit.getElement());
+
+        if (mode === Mode.DEFAULT) {
+          if (this._dayList.getElement().contains(this._eventEdit.getElement())) {
+            this._container.replaceChild(this._eventView.getElement(), this._eventEdit.getElement());
+          }
+        } else if (mode === Mode.ADDING) {
+          this._container.removeChild(currentView.getElement());
+          this._onDataChange(null, null, null);
+        }
+
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
@@ -45,7 +68,7 @@ export class EventController {
       const updatedEvent = new EventMock();
 
       updatedEvent.setData({
-        description: dayData.events[dayData.events.findIndex((it) => it === evData)].description,
+        description: `temporary description`,
         type: formData.get(`event-type`),
         city: formData.get(`event-destination`),
         price: formData.get(`event-price`),
@@ -86,18 +109,37 @@ export class EventController {
         ],
       });
 
-      this._onDataChange(this._dayData, this._eventData, updatedEvent.getData());
+      if (mode === Mode.ADDING) {
+        this._onDataChange(null, null, updatedEvent.getData());
+      } else {
+        this._onDataChange(dayData, evData, updatedEvent.getData());
+      }
       document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
+    this._eventEdit.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      if (mode === Mode.ADDING) {
+        this._container.removeChild(currentView.getElement());
+        this._onDataChange(null, null, null);
+      } else {
+        this._onDataChange(dayData, evData, null);
+      }
     });
 
     this._eventEdit.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      this._eventEdit.getDefaulEventState();
-      container.replaceChild(this._eventView.getElement(), this._eventEdit.getElement());
 
+      if (mode === Mode.ADDING) {
+        this._container.removeChild(currentView.getElement());
+        this._onDataChange(null, null, null);
+      } else {
+        this._eventEdit.getDefaulEventState();
+        container.replaceChild(this._eventView.getElement(), this._eventEdit.getElement());
+      }
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
-    render(container, this._eventView.getElement(), Position.BEFOREEND);
+    render(container, currentView.getElement(), renderPosition);
   }
 }
