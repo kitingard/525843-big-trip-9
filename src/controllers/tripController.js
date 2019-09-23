@@ -1,8 +1,11 @@
 import {EventController} from "./eventController";
 import {Day} from "../components/day";
 import {DaysList} from "../components/daysList";
+import {EventMock} from "../components/data";
+
 import {render, Position} from "../components/utils";
 import {Sort} from "../components/sort";
+import moment from "moment";
 
 export class TripController {
   constructor(container, data) {
@@ -28,18 +31,26 @@ export class TripController {
   }
 
   _renderEvent(eventData, container, data) {
-    const eventController = new EventController(eventData, container, data, this._onDataChange, this._onChangeView, this._daysList);
+    const eventController = new EventController(eventData, container, data, this._onDataChange, this._onChangeView, this._daysList, `default`);
     this._subscriptions.push(eventController.setDefaultView.bind(eventController));
   }
 
   _onDataChange(dayData, evData, newEvData) {
+    const dayIndex = this._sortTrigger === `event` ? dayData.counter - 1 : dayData.count;
+    const index = dayData.events.findIndex((it) => it === evData);
+
+    console.log(dayData)
+    console.log(evData)
+
     this._daysList.removeElement();
     render(this._container, this._daysList.getElement(), Position.BEFOREEND);
 
-    if (this._sortTrigger === `event`) {
-      this._data[dayData.counter - 1].events[dayData.events.findIndex((it) => it === evData)] = newEvData;
+    if (newEvData === null) {
+      this._data[dayIndex].events = [...this._data[dayIndex].events.slice(0, index), ...this._data[dayIndex].events.slice(index + 1)];
+    // } else if (this._data[dayIndex].events === undefined) {
+    //   this._data[dayIndex] = [newEvData, ...this._data];
     } else {
-      this._data[dayData.count].events[dayData.events.findIndex((it) => it === evData)] = newEvData;
+      this._data[dayIndex].events[index] = newEvData;
     }
 
     this._dataController.setData(this._data);
@@ -70,6 +81,66 @@ export class TripController {
   _reloadData() {
     this._data = this._dataController.getSortedData(this._sortTrigger);
     return this._data;
+  }
+
+  show() {
+    this._container.classList.remove(`visually-hidden`);
+  }
+
+  hide() {
+    this._container.classList.add(`visually-hidden`);
+  }
+
+  createEvent() {
+    const defaultEvent = new EventMock();
+    defaultEvent.setData({
+      description: ``,
+      type: `bus`,
+      city: ``,
+      price: 0,
+      startTime: moment(),
+      endTime: moment(),
+      isFavorite: false,
+      options: [
+        {
+          value: `luggage`,
+          title: `Add luggage`,
+          price: 30,
+          checked: false,
+        },
+        {
+          value: `class`,
+          title: `Switch to comfort class`,
+          price: 100,
+          checked: false,
+        },
+        {
+          value: `meal`,
+          title: `Add meal`,
+          price: 15,
+          checked: false,
+        },
+        {
+          value: `seats`,
+          title: `Choose seats`,
+          price: 5,
+          checked: false,
+        },
+        {
+          value: `train`,
+          title: `Travel by train`,
+          price: 40,
+          checked: false,
+        },
+      ],
+    });
+
+    const defaultDay = {
+      date: ``,
+      counter: ``,
+      events: [defaultEvent],
+    }
+    const newEventController = new EventController(defaultEvent.getData(), this._container.querySelector(`.trip-days`), defaultDay, this._onDataChange, this._onChangeView, this._daysList, `adding`);
   }
 
   init() {
