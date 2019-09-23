@@ -18,7 +18,7 @@ dataController.init();
 headerController.init();
 tripController.init();
 render(statisticsContainer, statistics.getElement(), Position.BEFOREEND);
-statistics.getElement().classList.add(`visually-hidden`);;
+statistics.getElement().classList.add(`visually-hidden`);
 
 Array.from(document.querySelectorAll(`.trip-tabs__btn`)).forEach((btn) => btn.addEventListener(`click`, (evt) => {
   evt.preventDefault();
@@ -44,7 +44,7 @@ Array.from(document.querySelectorAll(`.trip-tabs__btn`)).forEach((btn) => btn.ad
     default:
       break;
   }
-}))
+}));
 
 document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();

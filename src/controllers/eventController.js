@@ -48,6 +48,7 @@ export class EventController {
           }
         } else if (mode === Mode.ADDING) {
           this._container.removeChild(currentView.getElement());
+          this._onDataChange(null, null, null);
         }
 
         document.removeEventListener(`keydown`, onEscKeyDown);
@@ -108,20 +109,34 @@ export class EventController {
         ],
       });
 
-      this._onDataChange(dayData, evData, updatedEvent.getData());
+      if (mode === Mode.ADDING) {
+        this._onDataChange(null, null, updatedEvent.getData());
+      } else {
+        this._onDataChange(dayData, evData, updatedEvent.getData());
+      }
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
     this._eventEdit.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      this._onDataChange(dayData, evData, null);
-    })
+      if (mode === Mode.ADDING) {
+        this._container.removeChild(currentView.getElement());
+        this._onDataChange(null, null, null);
+      } else {
+        this._onDataChange(dayData, evData, null);
+      }
+    });
 
     this._eventEdit.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      this._eventEdit.getDefaulEventState();
-      container.replaceChild(this._eventView.getElement(), this._eventEdit.getElement());
 
+      if (mode === Mode.ADDING) {
+        this._container.removeChild(currentView.getElement());
+        this._onDataChange(null, null, null);
+      } else {
+        this._eventEdit.getDefaulEventState();
+        container.replaceChild(this._eventView.getElement(), this._eventEdit.getElement());
+      }
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
