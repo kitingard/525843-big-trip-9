@@ -47,3 +47,5 @@ export const getTypeDescription = ((type) => {
   ]);
   return typeDescriptions.get(type);
 });
+
+export const reducer = (accumulator, currentValue) => accumulator + currentValue;

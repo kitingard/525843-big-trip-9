@@ -17,12 +17,11 @@ export class Statistics extends AbstractComponent {
     super();
     this._moneyContainer = document.querySelector(`.statistics__chart--money`);
 
-
     this._moneyChart = null;
     this._transportChart = null;
     this._timeChart = null;
 
-    this.renderMoneyChart(nTypes, mNum);
+    
   }
 
   renderChart(ctx, labels, data, title, formatter) {

@@ -1,10 +1,10 @@
 import moment from "moment";
-import {sortDates, sortNumbers} from "../components/utils";
+import {sortDates, sortNumbers, reducer} from "../components/utils";
 
 export class DataController {
   constructor(event) {
     this._event = event;
-    this._eventsData = this._getEventsData();
+    this.eventsData = this._getEventsData();
   }
 
   _getEventsData() {
@@ -17,12 +17,12 @@ export class DataController {
 
   _sortEvents(filter) {
     const eventSortedData = [];
-    const array = this._eventsData.map((element) => {
+    const array = this.eventsData.map((element) => {
       return moment(element.startTime).format(`MMM D YY`);
     });
     const startTimeSet = new Set(array.sort(sortDates));
     Array.from(startTimeSet).forEach((time, index) => {
-      let events = this._eventsData.filter((elem) => {
+      let events = this.eventsData.filter((elem) => {
         return moment(elem.startTime).format(`MMM D YY`) === time;
       }).sort(sortDates).reverse();
       if (filter !== `everything`) {
@@ -45,12 +45,12 @@ export class DataController {
   }
 
   _sortTimesAndPrices(param, func, filter) {
-    const numArray = this._eventsData.map((it) => {
+    const numArray = this.eventsData.map((it) => {
       return param === `price` ? it.price : it.timeDuration;
     }).sort(func).reverse();
     const numSet = new Set(numArray);
     const array = Array.from(numSet).map((parameter, i) => {
-      let sortEv = this._eventsData.filter((el) => {
+      let sortEv = this.eventsData.filter((el) => {
         return param === `price` ? el.price === parameter : el.timeDuration === parameter;
       });
       if (filter !== `everything`) {
@@ -84,7 +84,6 @@ export class DataController {
         });
       });
     });
-    const reducer = (accumulator, currentValue) => accumulator + currentValue;
     return priceArray.reduce(reducer);
   }
 
@@ -105,10 +104,10 @@ export class DataController {
   }
 
   setData(data) {
-    this._eventsData = [];
-    data.map((el) => el.events).forEach((it) => it.forEach((elem) => this._eventsData.push(elem)));
+    this.eventsData = [];
+    data.map((el) => el.events).forEach((it) => it.forEach((elem) => this.eventsData.push(elem)));
 
-    return this._eventsData;
+    return this.eventsData;
   }
 
   getSortedData(param, filter) {
