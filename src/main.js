@@ -10,7 +10,7 @@ const sortContainer = document.querySelector(`.trip-events`);
 const eventMock = new EventMock();
 const dataController = new DataController(eventMock);
 const headerController = new HeaderController(dataController);
-const tripController = new TripController(sortContainer, dataController);
+const tripController = new TripController(sortContainer, dataController, headerController);
 const statistics = new Statistics();
 const statisticsContainer = document.querySelector(`.page-body__page-main > .page-body__container`);
 

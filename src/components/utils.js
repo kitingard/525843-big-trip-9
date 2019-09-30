@@ -28,7 +28,7 @@ export const unrender = (element) => {
   }
 };
 
-export const sortDates = ((a, b) => moment(a, `X`) - moment(b, `X`));
+export const sortDates = ((a, b) => moment(a).toDate() - moment(b).toDate());
 
 export const sortNumbers = (((a, b) => a - b));
 
