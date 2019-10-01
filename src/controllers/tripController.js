@@ -9,7 +9,7 @@ import {Filter} from "../components/filter";
 import moment from "moment";
 
 export class TripController {
-  constructor(container, data, header) {
+  constructor(container, data, header, statistics) {
     this._container = container;
     this._sortTrigger = `event`;
     this._filterTrigger = `everything`;
@@ -21,6 +21,7 @@ export class TripController {
     this._filter = new Filter(this._filterTrigger);
     this._creatingEvent = null;
     this._header = header;
+    this._statistics = statistics;
 
     this._subscriptions = [];
     this._onDataChange = this._onDataChange.bind(this);
@@ -102,6 +103,7 @@ export class TripController {
   _reloadData() {
     this._data = this._dataController.getSortedData(this._sortTrigger, this._filterTrigger);
     this._header.reloadData(this._dataController);
+    this._statistics.reloadData(this._dataController);
     return this._data;
   }
 

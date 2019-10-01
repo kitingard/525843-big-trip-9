@@ -2,15 +2,12 @@ import {AbstractComponent} from "./abstract-component";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-// const INCREMENT_TEN_PERCENT = 1.1;
+
 const ChartTitle = {
   MONEY: `MONEY`,
   TIME: `TIME`,
   TRANSPORT: `TRANSPORT`,
 };
-
-const nTypes = [`bus`, `drive`, `flight`, `ship`, `taxi`, `train`, `transport`];
-const mNum = [100, 10, 1000, 50, 300];
 
 export class Statistics extends AbstractComponent {
   constructor() {
@@ -21,7 +18,7 @@ export class Statistics extends AbstractComponent {
     this._transportChart = null;
     this._timeChart = null;
 
-    
+
   }
 
   renderChart(ctx, labels, data, title, formatter) {
@@ -35,6 +32,9 @@ export class Statistics extends AbstractComponent {
         datasets: [{
           data,
           backgroundColor: `#ffffff`,
+          borderColor: `grey`,
+          borderWidth: 0,
+          hoverBorderWidth: 1,
         }]
       },
       options: {
@@ -51,6 +51,7 @@ export class Statistics extends AbstractComponent {
             formatter,
           },
         },
+        maintainAspectRatio: false,
         title: {
           display: true,
           text: title,
@@ -62,25 +63,20 @@ export class Statistics extends AbstractComponent {
           display: false,
         },
         scales: {
-          xAxes: [{
-            gridLines: {
-              display: false,
-              drawBorder: false,
-            },
-            ticks: {
-              display: false,
-              beginAtZero: true,
-            }
-          }],
           yAxes: [{
             gridLines: {
               display: false,
-              drawBorder: false,
+              drawBorder: false
             },
+          }],
+          xAxes: [{
             ticks: {
-              fontSize: 12,
-              fontStyle: `bold`,
-              padding: 10,
+              display: false,
+              beginAtZero: true,
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false
             }
           }]
         },
@@ -132,14 +128,12 @@ export class Statistics extends AbstractComponent {
     }
   }
 
-  // updateChart(chart, labels, data) {
-  //   chart.data.labels = labels;
-  //   chart.data.datasets[0].data = data;
-  //   chart.options.scales.xAxes.ticks.suggestedMax =
-  //     data[0] * INCREMENT_TEN_PERCENT;
+  updateChart(chart, labels, data) {
+    chart.data.labels = labels;
+    chart.data.datasets[0].data = data;
 
-  //   chart.update();
-  // }
+    chart.update();
+  }
 
   getTemplate() {
     return `<section class="statistics">
