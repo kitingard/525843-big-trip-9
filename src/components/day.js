@@ -13,7 +13,8 @@ export class Day extends AbstractComponent {
   }
 
   getTemplate() {
-    return `<li class="trip-days__item  day">
+    if (this._events.length) {
+      return `<li class="trip-days__item  day">
     <div class="day__info">
       <span class="day__counter">${this._counter}</span>
       <time class="day__date" datetime="${this._date.slice(0, -3)}">${this._date.slice(0, -3)}</time>
@@ -22,5 +23,8 @@ export class Day extends AbstractComponent {
     <ul class="trip-events__list">
     </ul>
   </li>`;
+    } else {
+      return ``;
+    }
   }
 }

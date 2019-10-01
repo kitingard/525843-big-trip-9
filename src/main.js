@@ -2,23 +2,20 @@
 import {DataController} from "./controllers/dataController";
 import {EventMock} from "./components/data";
 import {HeaderController} from "./controllers/headerController";
-import {render, Position} from "./components/utils";
-import {Statistics} from "./components/statistics";
+import {StatisticsController} from "./controllers/statisticsController";
 import {TripController} from "./controllers/tripController";
 
 const sortContainer = document.querySelector(`.trip-events`);
 const eventMock = new EventMock();
 const dataController = new DataController(eventMock);
 const headerController = new HeaderController(dataController);
-const tripController = new TripController(sortContainer, dataController);
-const statistics = new Statistics();
-const statisticsContainer = document.querySelector(`.page-body__page-main > .page-body__container`);
+const statisticsController = new StatisticsController(dataController);
+const tripController = new TripController(sortContainer, dataController, headerController, statisticsController);
 
 dataController.init();
 headerController.init();
 tripController.init();
-render(statisticsContainer, statistics.getElement(), Position.BEFOREEND);
-statistics.getElement().classList.add(`visually-hidden`);
+statisticsController.init();
 
 Array.from(document.querySelectorAll(`.trip-tabs__btn`)).forEach((btn) => btn.addEventListener(`click`, (evt) => {
   evt.preventDefault();
@@ -33,12 +30,12 @@ Array.from(document.querySelectorAll(`.trip-tabs__btn`)).forEach((btn) => btn.ad
   switch ((evt.target.innerText).toLowerCase().trim()) {
     case `table`:
       tripController.show();
-      statistics.getElement().classList.add(`visually-hidden`);
+      statisticsController.hide();
       getActiveBtn();
       break;
     case `stats`:
       tripController.hide();
-      statistics.getElement().classList.remove(`visually-hidden`);
+      statisticsController.show();
       getActiveBtn();
       break;
     default:
