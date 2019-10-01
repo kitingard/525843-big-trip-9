@@ -1,20 +1,33 @@
 import {Statistics} from "../components/statistics";
 import {render, Position, reducer} from "../components/utils";
 
+const DECIMAL_NUMBER_SYSTEM = 10;
+const HOUR = 60 * 60 * 1000;
 
 export class StatisticsController {
   constructor(data) {
     this._data = data.eventsData;
     this._statistics = new Statistics();
+    this._moneyData = [];
+    this._transportData = [];
+    this._timeSpentData = [];
 
+    this.getChartsData(`money`);
+    this.getChartsData(`transport`);
+    this.getChartsData(`timeSpent`);
     this.hide();
   }
 
   reloadData(newData) {
     this._data = newData.eventsData;
+
     this.getChartsData(`money`);
     this.getChartsData(`transport`);
     this.getChartsData(`timeSpent`);
+
+    this._statistics.renderMoneyChart(this._moneyData.labels, this._moneyData.data);
+    this._statistics.renderTransportChart(this._transportData.labels, this._transportData.data);
+    this._statistics.renderTimeChart(this._timeSpentData.labels, this._timeSpentData.data);
   }
 
   getChartsData(param) {
@@ -23,22 +36,20 @@ export class StatisticsController {
     let numbersArray = [];
 
     switch (param) {
-
       case `money`:
         const typesAndPriceArray = [];
-
         this._data.forEach((elem) => {
           typesArray.forEach((it) => {
             if (it === elem.type) {
               const prices = [];
               elem.options.forEach((offer) => {
                 if (offer.checked === true) {
-                  prices.push(parseInt(offer.price, 10));
+                  prices.push(parseInt(offer.price, DECIMAL_NUMBER_SYSTEM));
                 } else {
                   return;
                 }
               });
-              prices.push(parseInt(elem.price, 10));
+              prices.push(parseInt(elem.price, DECIMAL_NUMBER_SYSTEM));
               return typesAndPriceArray.push({
                 type: elem.type,
                 price: prices.reduce(reducer)
@@ -48,7 +59,6 @@ export class StatisticsController {
             }
           });
         });
-
         typesArray.forEach((type) => {
           const priceArray = [];
           typesAndPriceArray.forEach((element) => {
@@ -58,7 +68,7 @@ export class StatisticsController {
           });
           numbersArray.push(priceArray.reduce(reducer));
         });
-        this._statistics.renderMoneyChart(typesArray, numbersArray);
+        this._moneyData = {labels: typesArray, data: numbersArray};
         break;
 
       case `transport`:
@@ -66,7 +76,6 @@ export class StatisticsController {
         typesArray = typesArray.filter((type) => {
           return transport.includes(type);
         });
-
         typesArray.forEach((elem) => {
           let i = 0;
           this._data.forEach((el) => {
@@ -76,12 +85,11 @@ export class StatisticsController {
           });
           numbersArray.push(i);
         });
-        this._statistics.renderTransportChart(typesArray, numbersArray);
+        this._transportData = {labels: typesArray, data: numbersArray};
         break;
 
       case `timeSpent`:
         const durationArray = [];
-
         this._data.forEach((elem) => {
           typesArray.forEach((it) => {
             if (it === elem.type) {
@@ -94,7 +102,6 @@ export class StatisticsController {
             }
           });
         });
-
         typesArray.forEach((type) => {
           const timeArray = [];
           durationArray.forEach((element) => {
@@ -102,9 +109,9 @@ export class StatisticsController {
               timeArray.push(element.value);
             }
           });
-          numbersArray.push(Math.round(timeArray.reduce(reducer) / (60 * 60 * 1000)));
+          numbersArray.push(Math.round(timeArray.reduce(reducer) / HOUR));
         });
-        this._statistics.renderTimeChart(typesArray, numbersArray);
+        this._timeSpentData = {labels: typesArray, data: numbersArray};
         break;
 
       default:
@@ -123,8 +130,9 @@ export class StatisticsController {
   init() {
     const statisticsContainer = document.querySelector(`.page-body__page-main > .page-body__container`);
     render(statisticsContainer, this._statistics.getElement(), Position.BEFOREEND);
-    this.getChartsData(`money`);
-    this.getChartsData(`transport`);
-    this.getChartsData(`timeSpent`);
+
+    this._statistics.renderMoneyChart(this._moneyData.labels, this._moneyData.data);
+    this._statistics.renderTransportChart(this._transportData.labels, this._transportData.data);
+    this._statistics.renderTimeChart(this._timeSpentData.labels, this._timeSpentData.data);
   }
 }

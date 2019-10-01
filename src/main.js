@@ -2,7 +2,6 @@
 import {DataController} from "./controllers/dataController";
 import {EventMock} from "./components/data";
 import {HeaderController} from "./controllers/headerController";
-import {render, Position} from "./components/utils";
 import {StatisticsController} from "./controllers/statisticsController";
 import {TripController} from "./controllers/tripController";
 
@@ -12,7 +11,6 @@ const dataController = new DataController(eventMock);
 const headerController = new HeaderController(dataController);
 const statisticsController = new StatisticsController(dataController);
 const tripController = new TripController(sortContainer, dataController, headerController, statisticsController);
-
 
 dataController.init();
 headerController.init();

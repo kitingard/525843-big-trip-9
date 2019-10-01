@@ -17,8 +17,6 @@ export class Statistics extends AbstractComponent {
     this._moneyChart = null;
     this._transportChart = null;
     this._timeChart = null;
-
-
   }
 
   renderChart(ctx, labels, data, title, formatter) {

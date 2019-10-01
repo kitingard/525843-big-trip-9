@@ -66,6 +66,9 @@ export class TripController {
 
     this._dataController.setData(this._data);
     this._dataController.getSortedData(this._sortTrigger, this._filterTrigger).map((day) => this._renderDay(day));
+
+    this._header.reloadData(this._dataController);
+    this._statistics.reloadData(this._dataController);
   }
 
   _onChangeView() {
@@ -98,12 +101,13 @@ export class TripController {
     this._daysList.getElement().innerHTML = ``;
     this._dataController.getSortedData(this._sortTrigger, this._filterTrigger).map((day) => this._renderDay(day));
     this._reloadData();
+
+    this._header.reloadData(this._dataController);
+    this._statistics.reloadData(this._dataController);
   }
 
   _reloadData() {
     this._data = this._dataController.getSortedData(this._sortTrigger, this._filterTrigger);
-    this._header.reloadData(this._dataController);
-    this._statistics.reloadData(this._dataController);
     return this._data;
   }
 
