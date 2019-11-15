@@ -41,9 +41,10 @@ export class Statistics extends AbstractComponent {
             display: true,
             clamp: true,
             anchor: `end`,
+            align: `start`,
             color: `black`,
             font: {
-              size: 14,
+              size: 15,
               style: `bold`,
             },
             formatter,
@@ -138,15 +139,15 @@ export class Statistics extends AbstractComponent {
     <h2>Trip statistics</h2>
 
     <div class="statistics__item statistics__item--money">
-      <canvas class="statistics__chart  statistics__chart--money" width="900"></canvas>
+      <canvas class="statistics__chart  statistics__chart--money" width="900" height="300px"></canvas>
     </div>
 
     <div class="statistics__item statistics__item--transport">
-      <canvas class="statistics__chart  statistics__chart--transport" width="900"></canvas>
+      <canvas class="statistics__chart  statistics__chart--transport" width="900" height="300px"></canvas>
     </div>
 
     <div class="statistics__item statistics__item--time-spend">
-      <canvas class="statistics__chart  statistics__chart--time" width="900"></canvas>
+      <canvas class="statistics__chart  statistics__chart--time" width="900" height="300px"></canvas>
     </div>
   </section>`;
   }
