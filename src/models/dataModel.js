@@ -7,7 +7,7 @@ const Method = {
 
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
-    // console.log(`response`, response)
+    // console.log(`response`, response.json().then(body => console.log(body)))
     return response;
   } else {
     throw new Error(`${response.status}: ${response.statusText}`);
@@ -20,12 +20,24 @@ export class DataModel {
     this._authorization = authorization;
   }
 
-  _load(url) {
-    const headers = new Headers();
+  createEvent(task) {
+    // console.log(JSON.stringify(task))
+    return this._load({
+      url: `destinations`,
+      method: Method.GET,
+      body: JSON.stringify(task),
+      headers: new Headers()
+    });
+  }
+
+  _load({url, method, body, headers}) {
+    // const headers = new Headers();
+
+    // console.log(`url`, url, `method`, method, `body`, body, `headers`, headers)
 
     headers.append(`Authorization`, this._authorization);
 
-    return fetch(`${this._endPoint}/${url}`, {method: Method.GET, body: null, headers})
+    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
       .then(checkStatus)
       .catch((err) => {
         // console.error(`fetch error: ${err}`)

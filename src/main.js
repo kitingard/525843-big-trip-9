@@ -52,4 +52,4 @@ document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (e
 const AUTHORIZATION = `Basic dXNlckBwYXNzd=${Math.random()}`;
 const END_POINT = `https://htmlacademy-es-9.appspot.com/big-trip`;
 const data = new DataModel({endPoint: END_POINT, authorization: AUTHORIZATION});
-data._load(`points`);
+data.createEvent(null);
