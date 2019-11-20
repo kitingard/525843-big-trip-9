@@ -52,4 +52,34 @@ document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (e
 const AUTHORIZATION = `Basic dXNlckBwYXNzd=${Math.random()}`;
 const END_POINT = `https://htmlacademy-es-9.appspot.com/big-trip`;
 const data = new DataModel({endPoint: END_POINT, authorization: AUTHORIZATION});
-data.createEvent(null);
+
+const ev = {
+  'base_price': 222,
+  'date_from': `2019-07-10T22:55:56.845Z`,
+  'date_to': `2019-07-11T11:22:13.375Z`,
+  'destination': {
+    'description': `Chamonix, is a beautiful city, a true asian pearl, with crowded streets.`,
+    'name': `Chamonix`,
+    'pictures': [
+      {
+        'src': `http://picsum.photos/300/200?r=0.0762563005163317`,
+        'description': `Chamonix parliament building`
+      }
+    ]
+  },
+  'is_favorite': false,
+  'offers': [
+    {'name': `Infotainment system`, 'title': `Infotainment system`, 'price': 40},
+    {'name': `Order meal`, 'title': `Order meal`, 'price': 180}
+  ],
+  'type': `taxi`,
+};
+
+data.getEvents();
+
+data.createEvent(ev);
+
+data.getEvents();
+
+
+// console.log(`getEvent`, data.getEvents())
